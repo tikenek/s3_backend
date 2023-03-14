@@ -1,11 +1,26 @@
-resource "aws_dynamodb_table" "my_table" {
+resource "aws_dynamodb_table" "lock" {
   name           = var.dynamodb_table_name
-  billing_mode   = "PAY_PER_REQUEST"
+  read_capacity  = 20
+  write_capacity = 20
+  hash_key       = "UserId"
+
+  attribute {
+    name = "UserId"
+    type = "S"
+  }
 
   attribute {
     name = "LockID"
     type = "S"
   }
 
-  hash_key = "LockID"
+  global_secondary_index {
+    name            = "LockIndex"
+    hash_key        = "LockID"
+    projection_type = "ALL"
+    write_capacity  = 20
+    read_capacity   = 20
+  }
+
+  tags = var.tags
 }

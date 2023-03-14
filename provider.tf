@@ -1,8 +1,5 @@
-terraform {
-  backend "s3" {
-    bucket         = aws_s3_bucket.my_bucket.id
-    key            = "terraform.tfstate"
-    region         = var.region
-    dynamodb_table = aws_dynamodb_table.my_table.name
-  }
+provider "aws" {
+  version                 = "~> 4.0"
+  shared_credentials_file = "~/.aws/credentials"
+  region                  = var.region
 }
