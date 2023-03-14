@@ -19,7 +19,7 @@ variable "versioning_configuration" {
 
 variable "dynamodb_table_name" {
   type    = string
-  default = "Sandbox_vpc_tynar_dynamodb"
+  default = "sandbox-vpc-tynar-dynamodb"
 }
 
 variable "tags" {
