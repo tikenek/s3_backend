@@ -13,18 +13,20 @@ resource "aws_iam_role" "s3_backend_role" {
       }
     ]
   })
+
+  tags = var.tags
 }
 
 resource "aws_iam_policy" "s3_backend_policy" {
-  name        = "s3-backend-policy"
+  name = "s3-backend-policy"
   description = "Policy for S3 backend to access DynamoDB table"
 
   policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
       {
-        Effect   = "Allow"
-        Action   = [
+        Effect = "Allow"
+        Action = [
           "dynamodb:GetItem",
           "dynamodb:PutItem",
           "dynamodb:DeleteItem",
@@ -32,7 +34,7 @@ resource "aws_iam_policy" "s3_backend_policy" {
           "dynamodb:Query",
           "dynamodb:Scan"
         ]
-        Resource = aws_dynamodb_table.lock.arn
+        Resource = aws_dynamodb_table.db_lock.arn
       }
     ]
   })
@@ -40,44 +42,43 @@ resource "aws_iam_policy" "s3_backend_policy" {
 
 resource "aws_iam_role_policy_attachment" "s3_backend_policy_attachment" {
   policy_arn = aws_iam_policy.s3_backend_policy.arn
-  role       = aws_iam_role.s3_backend_role.name
+  role = aws_iam_role.s3_backend_role.name
 }
 
 resource "aws_iam_policy" "s3_backend_s3_policy" {
-  name        = "s3-backend-s3-policy"
-  description = "Policy for S3 backend to access S3 bucket"
+  name = "s3-backend-s3-policy"
 
   policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
       {
-        Sid      = "ListBucketObjects"
-        Effect   = "Allow"
-        Action   = [
+        Sid = "ListBucketObjects"
+        Effect = "Allow"
+        Action = [
           "s3:ListBucket"
         ]
         Resource = [
-          "arn:aws:s3:::your-bucket-name"
+          "arn:aws:s3:::sandbox-vpc-tynar-s3-backend"
         ]
       },
       {
-        Sid      = "GetObject"
-        Effect   = "Allow"
-        Action   = [
+        Sid = "GetObject"
+        Effect = "Allow"
+        Action = [
           "s3:GetObject"
         ]
         Resource = [
-          "arn:aws:s3:::your-bucket-name/*"
+          "arn:aws:s3:::sandbox-vpc-tynar-s3-backend/*"
         ]
       },
       {
-        Sid      = "PutObject"
-        Effect   = "Allow"
-        Action   = [
+        Sid = "PutObject"
+        Effect = "Allow"
+        Action = [
           "s3:PutObject"
         ]
         Resource = [
-          "arn:aws:s3:::your-bucket-name/*"
+          "arn:aws:s3:::sandbox-vpc-tynar-s3-backend/*"
         ]
       }
     ]
@@ -86,5 +87,5 @@ resource "aws_iam_policy" "s3_backend_s3_policy" {
 
 resource "aws_iam_role_policy_attachment" "s3_backend_s3_policy_attachment" {
   policy_arn = aws_iam_policy.s3_backend_s3_policy.arn
-  role       = aws_iam_role.s3_backend_role.name
+  role = aws_iam_role.s3_backend_role.name
 }
