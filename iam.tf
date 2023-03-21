@@ -89,3 +89,31 @@ resource "aws_iam_role_policy_attachment" "s3_backend_s3_policy_attachment" {
   policy_arn = aws_iam_policy.s3_backend_s3_policy.arn
   role = aws_iam_role.s3_backend_role.name
 }
+
+resource "aws_iam_policy" "cloudtrail_s3_policy" {
+  name        = "tynar-vpc-cloudtrail-s3-policy"
+  description = "Policy for CloudTrail to write logs to an S3 bucket"
+
+  policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [
+      {
+        Sid = "AllowCloudTrailToWriteToS3Bucket",
+        Effect = "Allow",
+        Action = [
+          "s3:PutObject",
+          "s3:GetBucketAcl"
+        ],
+        Resource = [
+          "${aws_s3_bucket.my_bucket.arn}",
+          "${aws_s3_bucket.my_bucket.arn}/*"
+        ],
+        Condition = {
+          StringEquals = {
+            "s3:x-amz-acl" = "bucket-owner-full-control"
+          }
+        }
+      }
+    ]
+  })
+}
